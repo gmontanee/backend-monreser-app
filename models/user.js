@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 const userSchema = new Schema({
   username: {
@@ -17,51 +17,51 @@ const userSchema = new Schema({
     required: true
   },
   direction: {
-    type: String,
+    type: String
   },
   country: {
-    type: String,
+    type: String
   },
   region: {
-    type: String,
+    type: String
   },
   town: {
-    type: String,
+    type: String
   },
   postalCode: {
-    type: String,
+    type: String
   },
   archivedContainers: {
     type: [ObjectId],
-    default: [],
+    default: []
   },
   activeContainers: {
     type: [ObjectId],
-    ref: "Container",
+    ref: 'Container'
   },
   listOfTransporters: {
     type: [ObjectId],
-    default: [],
+    default: []
   },
   listOfClients: {
     type: [ObjectId],
-    default: [],
+    default: []
   },
   isAdmin: {
     type: Boolean,
-    default: false,
+    default: false
   },
   isTransporter: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 }, {
   timestamps: {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
-  },
-});
+  }
+})
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema)
 
-module.exports = User;
+module.exports = User
