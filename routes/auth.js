@@ -15,10 +15,7 @@ const {
 } = require('../helpers/middlewares')
 
 router.get('/me', isLoggedIn(), async (req, res, next) => {
-  console.log(req.session.currentUser.activeContainers)
   const currentUser = await User.findById(req.session.currentUser._id).populate('activeContainers')
-  console.log(currentUser.activeContainers)
-  // User find populate
   res.json(currentUser)
 })
 
@@ -32,7 +29,6 @@ router.post(
     try {
       const user = await User.findOne({ username })
       if (!user) {
-        console.log('here')
         next(createError(404))
       } else if (bcrypt.compareSync(password, user.password)) {
         req.session.currentUser = user
@@ -73,7 +69,6 @@ router.post(
 router.post(
   '/signup192837',
   async (req, res, next) => {
-    console.log(req.body)
     const { email, password, username } = req.body
 
     try {

@@ -35,18 +35,18 @@ const userSchema = new Schema({
     type: [ObjectId],
     default: []
   },
-  activeContainers: {
-    type: [ObjectId],
+  activeContainers: [{
+    type: ObjectId,
     ref: 'Container'
-  },
-  listOfTransporters: {
-    type: [ObjectId],
-    default: []
-  },
-  listOfClients: {
-    type: [ObjectId],
-    default: []
-  },
+  }],
+  listOfTransporters: [{
+    type: ObjectId,
+    ref: 'Container'
+  }],
+  listOfClients: [{
+    type: ObjectId,
+    ref: 'User'
+  }],
   isAdmin: {
     type: Boolean,
     default: false
