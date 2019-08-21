@@ -6,7 +6,7 @@ const createError = require('http-errors');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
-const User = require('../models/User');
+const User = require('../models/user');
 
 const {
   isLoggedIn,
@@ -15,7 +15,8 @@ const {
 } = require('../helpers/middlewares');
 
 router.get('/me', isLoggedIn(), (req, res, next) => {
-  res.json(req.session.currentUser);
+  res.json(req.session.currentUser)
+
 });
 
 router.post(
@@ -24,9 +25,11 @@ router.post(
   validationLoggin(),
   async (req, res, next) => {
     const { username, password } = req.body;
+    
     try {
       const user = await User.findOne({ username });
       if (!user) {
+        console.log("here")
         next(createError(404));
       } else if (bcrypt.compareSync(password, user.password)) {
         req.session.currentUser = user;
@@ -45,7 +48,30 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const {email, password, username, direction, country, region, town, postalCode} = req.body;
+    console.log('signup client done')
+    try {
+      const user = await User.findOne({ username }, 'username');
+      if (user) {
+        return next(createError(422));
+      } else {
+        const salt = bcrypt.genSaltSync(10);
+        const hashPass = bcrypt.hashSync(password, salt);
+        const newUser = await User.create({ username, password: hashPass, email, direction, country, region, town, postalCode });
+        req.session.currentUser = newUser;
+        res.status(200).json(newUser);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/signup192837',
+  async (req, res, next) => {
+    console.log(req.body);
+    const {email, password, username} = req.body;
 
     try {
       const user = await User.findOne({ username }, 'username');
@@ -54,7 +80,31 @@ router.post(
       } else {
         const salt = bcrypt.genSaltSync(10);
         const hashPass = bcrypt.hashSync(password, salt);
-        const newUser = await User.create({ username, password: hashPass });
+        const newAdminUser = await User.create({ username, password: hashPass, email, isAdmin: true});
+        req.session.currentUser = newAdminUser;
+        res.status(200).json(newAdminUser);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/signuptransporter192837',
+  isNotLoggedIn(),
+  validationLoggin(),
+  async (req, res, next) => {
+    const {email, password, username, direction, country, region, town, postalCode} = req.body;
+    console.log('signup transporter done')
+    try {
+      const user = await User.findOne({ username }, 'username');
+      if (user) {
+        return next(createError(422));
+      } else {
+        const salt = bcrypt.genSaltSync(10);
+        const hashPass = bcrypt.hashSync(password, salt);
+        const newUser = await User.create({ username, password: hashPass, email, direction, country, region, town, postalCode, isTransporter: true });
         req.session.currentUser = newUser;
         res.status(200).json(newUser);
       }
