@@ -33,6 +33,9 @@ const containerSchema = new Schema({
     type: ObjectId,
     required: true
   },
+  transporter: {
+    type: ObjectId
+  },
   isAccepted: {
     type: Boolean,
     default: false

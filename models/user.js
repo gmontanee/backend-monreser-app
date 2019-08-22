@@ -31,17 +31,17 @@ const userSchema = new Schema({
   postalCode: {
     type: String
   },
-  archivedContainers: {
-    type: [ObjectId],
-    default: []
-  },
+  archivedContainers: [{
+    type: ObjectId,
+    default: 'Container'
+  }],
   activeContainers: [{
     type: ObjectId,
     ref: 'Container'
   }],
   listOfTransporters: [{
     type: ObjectId,
-    ref: 'Container'
+    ref: 'User'
   }],
   listOfClients: [{
     type: ObjectId,

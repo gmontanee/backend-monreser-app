@@ -88,10 +88,40 @@ router.post(
     const { _id, name } = req.body
     try {
       console.log(_id, name)
-      const containerUpdate = await Container.findByIdAndUpdate(_id, { isDelivered: true })
       const transporterUpdate = await User.findOneAndUpdate({ username: name }, { $pull: { activeContainers: _id } })
+      const containerUpdate = await Container.findByIdAndUpdate(_id, { isDelivered: true, transporter: transporterUpdate._id })
       const clientId = containerUpdate.client
       await User.findByIdAndUpdate(clientId, { $push: { activeContainers: _id } })
+      res.status(200).json(transporterUpdate)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+router.post(
+  '/requestCollection',
+  async (req, res, next) => {
+    const { containerId } = req.body
+    try {
+      const container = await Container.findById(containerId)
+      await User.findByIdAndUpdate(container.transporter, { $push: { activeContainers: containerId } })
+      const clientUpdate = await User.findByIdAndUpdate(container.client, { $pull: { activeContainers: containerId } })
+      res.status(200).json(clientUpdate)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+router.post(
+  '/updateContainerToCollected',
+  async (req, res, next) => {
+    const { containerId } = req.body
+    try {
+      console.log(containerId)
+      const container = await Container.findById(containerId)
+      const transporterUpdate = await User.findByIdAndUpdate(container.transporter, { $pull: { activeContainers: containerId } })
+      await User.findByIdAndUpdate(container.transporter, { $push: { archivedContainers: containerId } })
+      await User.findByIdAndUpdate(container.client, { $push: { archivedContainers: containerId } })
       res.status(200).json(transporterUpdate)
     } catch (error) {
       next(error)
