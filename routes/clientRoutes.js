@@ -82,5 +82,21 @@ router.post(
     }
   }
 )
+router.post(
+  '/updateContainerToDelivered',
+  async (req, res, next) => {
+    const { _id, name } = req.body
+    try {
+      console.log(_id, name)
+      const containerUpdate = await Container.findByIdAndUpdate(_id, { isDelivered: true })
+      const transporterUpdate = await User.findOneAndUpdate({ username: name }, { $pull: { activeContainers: _id } })
+      const clientId = containerUpdate.client
+      await User.findByIdAndUpdate(clientId, { $push: { activeContainers: _id } })
+      res.status(200).json(transporterUpdate)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
 
 module.exports = router

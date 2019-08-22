@@ -36,6 +36,10 @@ const containerSchema = new Schema({
   isAccepted: {
     type: Boolean,
     default: false
+  },
+  isDelivered: {
+    type: Boolean,
+    default: false
   }
 })
 
