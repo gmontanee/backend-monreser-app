@@ -69,4 +69,18 @@ router.post(
   }
 )
 
+router.post(
+  '/modifyContainer',
+  async (req, res, next) => {
+    const { features, containerId } = req.body
+    const { service, filled, waste, capacity, ubicacio, dataEntrega, dataRetirada } = features
+    console.log(service, filled, waste, capacity, ubicacio, dataEntrega, dataRetirada, containerId)
+    try {
+      await Container.findByIdAndUpdate(containerId, { service, filled, waste, capacity, ubicacio, dataEntrega, dataRetirada })
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
 module.exports = router
