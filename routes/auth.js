@@ -15,7 +15,8 @@ const {
 } = require('../helpers/middlewares')
 
 router.get('/me', isLoggedIn(), async (req, res, next) => {
-  const currentUser = await User.findById(req.session.currentUser._id).populate('activeContainers')
+  const currentUser = await User.findById(req.session.currentUser._id).populate('activeContainers').populate('archivedContainers')
+  console.log(currentUser)
   res.json(currentUser)
 })
 

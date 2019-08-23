@@ -33,7 +33,7 @@ const userSchema = new Schema({
   },
   archivedContainers: [{
     type: ObjectId,
-    default: 'Container'
+    ref: 'Container'
   }],
   activeContainers: [{
     type: ObjectId,
